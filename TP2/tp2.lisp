@@ -1,6 +1,3 @@
-(defun l ()
-  (load "tp2.lisp"))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; FONCTIONS UTILITAIRES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -21,7 +18,7 @@
 	    (T (setq retour (append retour (list elem))))))))
 
 
-;équivalent à la fonction member native de common lisp, mais gère le cas des liste de listes.
+;équivalent à la fonction member native de common lisp, mais gère le cas des listes de listes.
 (defun is_member (item liste)
   (cond ((eq liste nil) NIL)
 	((equal item (car liste)) T)
@@ -47,6 +44,7 @@
     (if (allowed_state (echange etat 2 4) etats_visites)
       (setq retour (append retour (list (echange etat 2 4)))))
       retour))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Algorithme de recherche en profondeur d'abord
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -55,13 +53,16 @@
   (let ((NetatsVisites (append etatsVisites (list etatActuel))))
     (cond ((equal etatActuel etatRecherche) NetatsVisites)
 	  (T (let ((succs (successeurs etatActuel NetatsVisites)))
-		 (dolist (succ succs)
-		   (let ((chemin (recherche_prof succ etatRecherche NetatsVisites)))
-		     (when chemin
-		       (return-from recherche_prof chemin)
-		       )
+	       (loop 
+		 (when (not succs)
+		   (return nil)
+		   )
+		 (let ((chemin (recherche_prof (pop succs) etatRecherche NetatsVisites)))
+		   (when chemin
+		     (return chemin)
 		     )
 		   )
+		 )
 	       )
 	     )
 	  )
@@ -73,6 +74,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; FONCTIONS DE CALCUL POUR L'HEURISTIQUE
+
+;renvoie T si les éléments 3 et 4 des états 1 et 2 sont identiques
+(defun fin_liste (etat1 etat2)
+  (if (and (eq (caddr etat1) (caddr etat2)) (equal (last etat1) (last etat2)))
+    T
+    Nil
+    )
+  )
 
 ;renvoie le nombre d'éléments en commun dans une liste
 (defun lettre_commun (etat1 etat2)
@@ -90,11 +99,11 @@
 
 ; détermine le nombre d'états successeurs à un état donné
 (defun nombre_successeurs (etat etatsVisites)
-  (length (successeurs2 etat etatsVisites)))
+  (length (successeurs etat etatsVisites)))
 
 ; détermine si les successeurs d'un état sont solutions ou non
 (defun is_solution (etat etatRecherche etatsVisites)
-  (is_member etatRecherche (successeurs2 etat etatsVisites)))
+  (is_member etatRecherche (successeurs etat etatsVisites)))
 
 ;;; HEURISTIQUE ET EXPLOITATION
 
@@ -104,7 +113,8 @@
     (if (is_solution etat etatRecherche etatsVisites)
       (incf score 1000)
       (progn (incf score (lettre_commun etat etatRecherche))
-	     (incf score (nombre_successeurs etat etatsVisites)))
+	     (incf score (nombre_successeurs etat etatsVisites))
+	     )
       )
     )
   )
@@ -125,31 +135,106 @@
       )
     (nelem listeEtats pos_max)
     )
+ 
   )
 ; classe les états selon leur pertinence d'après l'heuristique.
 (defun classementEtat (listeEtats etatRecherche etatsVisites)
   (if (eq listeEtats nil)
     nil
-    (append (list (choixEtat listeEtats etatRecherche etatsVisites))
-	    (classementEtat (remove (choixEtat listeEtats etatRecherche etatsVisites) listeEtats)
+    (append (classementEtat (remove (choixEtat listeEtats etatRecherche etatsVisites) listeEtats)
 			    etatRecherche etatsVisites)
+	    (list (choixEtat listeEtats etatRecherche etatsVisites))
 	    )
     )
   )
 
-;;; ALGORITHME DE RECHERCHE USANT DE L'HEURISTIQUE:w
+;;; ALGORITHME DE RECHERCHE USANT DE L'HEURISTIQUE
 
 (defun recherche_h (etatActuel etatRecherche etatsVisites)
   (let ((NetatsVisites (append etatsVisites (list etatActuel))))
     (cond ((equal etatActuel etatRecherche) NetatsVisites)
-	  (T (let ((classement (classementEtat (successeurs2 etatActuel etatsVisites) etatRecherche etatsVisites)))
-		 (dolist (succ classement)
-		   (let ((chemin (recherche_h succ etatRecherche NetatsVisites)))
-		     (when chemin
-		       (return-from recherche_h chemin)
-		       )
+	  (T (let ((succs (classementEtat (successeurs etatActuel NetatsVisites) etatRecherche etatsVisites)))
+	       (loop 
+		 (when (not succs)
+		   (return nil)
+		   )
+		 (let ((chemin (recherche_h (pop succs) etatRecherche NetatsVisites)))
+		   (when chemin
+		     (return chemin)
 		     )
 		   )
+		 )
+	       )
+	     )
+	  )
+    )
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ALGORITHME DE RECHERCHE SELON UNE AUTRE HEURISTIQUE 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun heuristique_optimale (etatActuel etatRecherche etatsVisites)
+  (let ((succs (successeurs etatActuel etatsVisites))
+	(NetatsVisites (append etatsVisites (list etatActuel))))
+    (if (equal etatActuel etatRecherche)
+      1
+      (if (eq succs nil)
+	50
+	(progn
+	  (let ((heur_succs nil))
+	    (dolist (succ succs)
+	      (push (heuristique_optimale succ etatRecherche NetatsVisites) heur_succs)
+	      )
+	    (+ 1 (apply 'min heur_succs))
+	    )
+	  )
+	)
+      )
+    )
+  )
+
+(defun choixEtat2 (listeEtats etatRecherche etatsVisites)
+  (let ((meilleur_choix nil)
+	(maximum 0)
+	(pos 1)
+	(pos_max 0)
+	)
+    (dolist (etat listeEtats)
+      (if (> (heuristique_optimale etat etatRecherche etatsVisites) maximum)
+	(progn (setq maximum (heuristique_optimale etat etatRecherche etatsVisites))
+	       (setq pos_max pos))
+	)
+      (incf pos 1)
+      )
+    (nelem listeEtats pos_max)
+    )
+  )
+; classe les états selon leur pertinence d'après l'heuristique.
+(defun classementEtat2 (listeEtats etatRecherche etatsVisites)
+  (if (eq listeEtats nil)
+    nil
+    (append (classementEtat2 (remove (choixEtat2 listeEtats etatRecherche etatsVisites) listeEtats)
+			    etatRecherche etatsVisites)
+	    (list (choixEtat2 listeEtats etatRecherche etatsVisites))
+	    )
+    )
+  )
+
+(defun recherche_h2 (etatActuel etatRecherche etatsVisites)
+  (let ((NetatsVisites (append etatsVisites (list etatActuel))))
+    (cond ((equal etatActuel etatRecherche) NetatsVisites)
+	  (T (let ((succs (classementEtat2 (successeurs etatActuel etatsVisites) etatRecherche etatsVisites)))
+	       (loop 
+		 (when (not succs)
+		   (return nil)
+		   )
+		 (let ((chemin (recherche_h2 (pop succs) etatRecherche NetatsVisites)))
+		   (when chemin
+		     (return chemin)
+		     )
+		   )
+		 )
 	       )
 	     )
 	  )

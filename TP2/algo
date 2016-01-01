@@ -1,0 +1,30 @@
+DFS (graphe G, sommet s)
+{
+  Marquer(s);
+  POUR CHAQUE élément s_fils de Voisins(s) FAIRE
+     SI NonMarqué(s_fils) ALORS
+       DFS(G,s_fils);
+     FIN-SI
+  FIN-POUR
+}
+
+fonction recherche_en_profondeur (SommetActuel, SommetRecherché, Chemin) est
+	Chemin <- concaténer (Chemin, Sommet)
+	Si SommetActuel = SommetRecherché alors
+		Retourner Chemin
+	Sinon
+		Successeurs = successeurs(SommetActuel)
+		Si Successeurs = nul
+			retourner nul
+		sinon
+			NouveauChemin = nul
+			Pour chaque Successeur de Successeurs
+				si recherche_en_profondeur (Successeur, SommetRecherché, Chemin) != nul
+					NouveauChemin = recherche_en_profondeur (Successeur, SommetRecherché, Chemin)
+				fin si
+			fin pour
+			retourner NouveauChemin
+		fin si
+	fin si
+fin fonction
+

@@ -1,0 +1,14 @@
+\BOOKMARK [1][-]{section.1}{Probl\351matique}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Un Simulateur de Combat}{section.1}% 2
+\BOOKMARK [1][-]{section.2}{Formalisation du probl\350me}{}% 3
+\BOOKMARK [2][-]{subsection.2.1}{Besoins}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.2}{Des rappels sur les pok\351mons}{section.2}% 5
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Calcul des statistiques}{subsection.2.2}% 6
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Types et modificateur de d\351gats}{subsection.2.2}% 7
+\BOOKMARK [3][-]{subsubsection.2.2.3}{Calcul des d\351gats, d\351roulement d'un combat, gagnant}{subsection.2.2}% 8
+\BOOKMARK [2][-]{subsection.2.3}{Repr\351sentation en Lisp de la base de faits : base\137faits.lisp}{section.2}% 9
+\BOOKMARK [2][-]{subsection.2.4}{Repr\351sentation en Lisp de la base de r\350gles : base\137regle.lisp}{section.2}% 10
+\BOOKMARK [1][-]{section.3}{Programme en Lisp}{}% 11
+\BOOKMARK [2][-]{subsection.3.1}{Moteur d'inf\351rence avec cha\356nage avant}{section.3}% 12
+\BOOKMARK [2][-]{subsection.3.2}{fonctions de services}{section.3}% 13
+\BOOKMARK [1][-]{section.4}{Utilisation}{}% 14

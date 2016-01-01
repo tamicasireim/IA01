@@ -1,0 +1,15 @@
+\select@language {french}
+\contentsline {section}{\numberline {1}Probl\IeC {\'e}matique}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}Un Simulateur de Combat}{3}{subsection.1.1}
+\contentsline {section}{\numberline {2}Formalisation du probl\IeC {\`e}me}{3}{section.2}
+\contentsline {subsection}{\numberline {2.1}Besoins}{3}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Des rappels sur les pok\IeC {\'e}mons}{3}{subsection.2.2}
+\contentsline {subsubsection}{\numberline {2.2.1}Calcul des statistiques}{3}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.2.2}Types et modificateur de d\IeC {\'e}gats}{4}{subsubsection.2.2.2}
+\contentsline {subsubsection}{\numberline {2.2.3}Calcul des d\IeC {\'e}gats, d\IeC {\'e}roulement d'un combat, gagnant}{4}{subsubsection.2.2.3}
+\contentsline {subsection}{\numberline {2.3}Repr\IeC {\'e}sentation en Lisp de la base de faits : base\_faits.lisp}{4}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Repr\IeC {\'e}sentation en Lisp de la base de r\IeC {\`e}gles : base\_regle.lisp}{5}{subsection.2.4}
+\contentsline {section}{\numberline {3}Programme en Lisp}{5}{section.3}
+\contentsline {subsection}{\numberline {3.1}Moteur d'inf\IeC {\'e}rence avec cha\IeC {\^\i }nage avant}{5}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}fonctions de services}{5}{subsection.3.2}
+\contentsline {section}{\numberline {4}Utilisation}{5}{section.4}

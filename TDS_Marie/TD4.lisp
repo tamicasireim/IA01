@@ -22,7 +22,7 @@
 	(cond ((eq etatActuel 'S) etatsVisites)
 		(T (let ((succs (successeurs etatActuel lab etatsVisites))
 			(NetatsVisites (append etatsVisites (list etatActuel))))
-		(when succs 
+		     (when succs 
 			(dolist (succ succs)
 				(let ((chemin (recherche lab succ NetatsVisites)))
 					(when chemin
